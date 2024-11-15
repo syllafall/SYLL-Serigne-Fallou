@@ -11,7 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18 # Mettez à jour vers la version 18 ou supérieure
           cache: npm
 
       - name: Install dependencies
@@ -30,9 +29,6 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-      - name: Build application
-        run: npm run build
 
   release:
     needs: build
