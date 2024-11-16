@@ -71,25 +71,7 @@ jobs:
       - name: Run E2E tests
         run: echo "Running E2E tests!"
 
-  only-canary:
-    if: env.ENV_TARGET == 'canary'
-    runs-on: ubuntu-latest
-
-    env:
-      ENV_TARGET: canary
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Running Canary Deployment
-        run: echo "Hello Only Canary!"
-
+  
   integration-test:
     needs: build
     runs-on: ubuntu-latest
