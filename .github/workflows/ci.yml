@@ -37,11 +37,12 @@ jobs:
       - name: Build application
         run: npm run build
 
-      # Commit any changes before running release-it
+      # Vérifier et ajouter des fichiers non suivis avant de lancer release-it
       - name: Commit changes (if any)
         run: |
           git add .
-          git commit -m "Auto commit before release" || echo "No changes to commit"
+          git diff --cached --exit-code || git commit -m "Auto commit before release"
+        continue-on-error: true  # Ignore if no changes to commit
 
       - name: Run release-it (without npm authentication)
         run: npx release-it --ci --no-npm
