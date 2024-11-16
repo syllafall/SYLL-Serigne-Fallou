@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint . --max-warnings=0",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "babel src --out-dir dist"
   },
   "dependencies": {
     "express": "^4.21.1"
