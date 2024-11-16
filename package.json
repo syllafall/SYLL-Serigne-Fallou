@@ -1,0 +1,17 @@
+{
+  "name": "syll-serigne-fallou",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js",
+    "test": "vitest run",
+    "lint": "eslint . --max-warnings=0",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
+    "husky": "^9.1.6",
+    "vitest": "^2.1.5"
+  }
+}
