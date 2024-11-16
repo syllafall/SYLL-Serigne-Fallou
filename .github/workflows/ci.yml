@@ -36,16 +36,9 @@ jobs:
 
       - name: Build application
         run: npm run build
+      - name: Debug Vitest
+        run: npx vitest run --reporter verbose
 
-      # Vérifier et ajouter des fichiers non suivis avant de lancer release-it
-      - name: Commit changes (if any)
-        run: |
-          git add .
-          git diff --cached --exit-code || git commit -m "Auto commit before release"
-        continue-on-error: true  # Ignore if no changes to commit
-
-      - name: Run release-it (without npm authentication)
-        run: npx release-it --ci --no-npm
 
   release:
     needs: build
@@ -60,8 +53,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Create a release (without npm authentication)
-        run: npx release-it --ci --no-npm
+      - name: Create a release
+        run: npx release-it --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   e2e-test:
     if: github.event_name == 'pull_request'
@@ -78,7 +73,26 @@ jobs:
 
       - name: Run E2E tests
         run: echo "Running E2E tests!"
-  
+
+  only-canary:
+    if: env.ENV_TARGET == 'canary'
+    runs-on: ubuntu-latest
+
+    env:
+      ENV_TARGET: canary
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Running Canary Deployment
+        run: echo "Hello Only Canary!"
+
   integration-test:
     needs: build
     runs-on: ubuntu-latest
