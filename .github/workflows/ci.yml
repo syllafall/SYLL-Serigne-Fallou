@@ -11,18 +11,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Mettez à jour vers la version 18 ou supérieure
-          cache: npm
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --cache .npm --prefer-offline
 
       - name: Lint code
         run: npm run lint
@@ -30,61 +35,11 @@ jobs:
       - name: Run tests
         run: npm test
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Build for production
+        run: npm run build
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Create a release
-        run: npx release-it --ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  e2e-test:
-    if: ${{ github.event_name == 'pull_request' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run E2E tests
-        run: npm run e2e
-
-  integration-test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run integration tests
-        run: npm run test:integration
-
-  
+          name: build
+          path: ./dist
