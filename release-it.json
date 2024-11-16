@@ -1,0 +1,6 @@
+{
+    "npm": {
+      "authToken": "${NPM_TOKEN}"
+    }
+  }
+  
