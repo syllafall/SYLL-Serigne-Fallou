@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -45,7 +48,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Create a release
         run: npx release-it --ci
@@ -63,7 +66,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Run E2E tests
         run: echo "Running E2E tests!"
@@ -82,7 +85,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Running Canary Deployment
         run: echo "Hello Only Canary!"
@@ -98,7 +101,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Running Integration Tests
         run: echo "Running Integration Tests!"
