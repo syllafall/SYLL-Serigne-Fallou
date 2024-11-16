@@ -1,11 +1,15 @@
 {
+  "type": "module",
   "name": "syll-serigne-fallou",
   "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "vitest run",
     "lint": "eslint . --max-warnings=0",
-    "prepare": "husky install"
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "express": "^4.21.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
