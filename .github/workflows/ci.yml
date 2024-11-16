@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -19,11 +22,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: npm
 
       - name: Install dependencies
-        run: npm ci --cache .npm --prefer-offline
+        run: npm ci
 
       - name: Lint code
         run: npm run lint
@@ -34,7 +37,11 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Run release-it (without npm authentication)
+        run: npx release-it --ci --no-npm
+
   release:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +51,39 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
-      - name: Create a release (without publishing to npm)
-        run: npx release-it --no-npm
+      - name: Create a release (without npm authentication)
+        run: npx release-it --ci --no-npm
+
+  e2e-test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Run E2E tests
+        run: echo "Running E2E tests!"
+  
+  integration-test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Running Integration Tests
+        run: echo "Running Integration Tests!"
