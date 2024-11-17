@@ -46,6 +46,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Echo Only Canary
         run: echo "Hello Only Canary !"  # Commande de test pour cet environnement
 
@@ -105,6 +114,9 @@ jobs:
           node-version: 'latest'
           cache: 'npm'
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Run Integration Test
         run: echo "Hello Integration !"  # Commande d'intégration
 
@@ -122,6 +134,9 @@ jobs:
         with:
           node-version: 'latest'
           cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run E2E test
         run: echo "Hello E2E !"  # Commande simple pour l'instant
@@ -166,6 +181,9 @@ jobs:
         with:
           node-version: 'latest'
           cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Deploy project
         run: echo "Deploy logic here"  # Remplacez par vos scripts de déploiement
