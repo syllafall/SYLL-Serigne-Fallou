@@ -9,63 +9,92 @@ on:
       - main
 
 jobs:
-  install:
-    runs-on: macos-latest
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
-      - name: Clean install dependencies
-        run: |
-          rm -rf node_modules
-          rm -f package-lock.json
-          npm install
+          node-version: 'latest'
+          cache: 'npm'
 
-  lint:
-    runs-on: macos-latest
-    needs: install
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Run lint
-        run: npm run lint
+      - name: Install dependencies
+        run: npm ci --cache .npm --prefer-offline
 
-  unit-test:
-    runs-on: macos-latest
-    needs: lint
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: validate
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Run unit tests
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --cache .npm --prefer-offline
+
+      - name: Build the project
+        run: npm run build
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --cache .npm --prefer-offline
+
+      - name: Run tests
         run: npm test
 
-  integration-test:
-    runs-on: macos-latest
-    needs: unit-test
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: test
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Run integration tests
-        run: echo "Running integration tests..."
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  e2e-test:
-    runs-on: macos-latest
-    needs: integration-test
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Run E2E tests
-        run: echo "Running E2E tests..."
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
 
-  only-canary-test:
-    runs-on: macos-latest
+      - name: Release project
+        run: echo "Release logic here" # Remplacez par vos scripts de release
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: release
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Run Only Canary tests
-        if: ${{ env.ENV_TARGET == 'canary' }}
-        run: echo "Running Canary tests..."
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+
+      - name: Deploy project
+        run: echo "Deploy logic here" # Remplacez par vos scripts de déploiement
