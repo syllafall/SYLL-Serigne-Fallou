@@ -53,9 +53,10 @@ jobs:
         run: echo "Hello Only Canary !"
 
   build:
-    name: Build Project
+    name: Build
     runs-on: ubuntu-latest
     needs: validate
+    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -66,32 +67,8 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-
-      # Si vous générez du HTML dans le dossier /dist
-      - name: Build HTML
+      - name: Build the project
         run: npm run build
-
-      # Si vous générez une image Docker (remplacez par vos paramètres spécifiques)
-      - name: Build Docker Image
-        run: |
-          docker build -t my-docker-image .
-
-      # Si vous souhaitez uploader l'artefact HTML
-      - name: Upload HTML as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: html-artifact
-          path: ./dist  # Le dossier contenant les fichiers générés
-
-      # Si vous souhaitez pousser l'image Docker dans un registre
-      - name: Push Docker Image to Docker Hub
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker tag my-docker-image ${{ secrets.DOCKER_USERNAME }}/my-docker-image:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/my-docker-image:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   test:
     name: Unit Test
