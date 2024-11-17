@@ -9,7 +9,8 @@
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run",
     "build": "babel src --out-dir dist",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "release-it"
   },
   "dependencies": {
     "express": "^4.21.1",
@@ -27,6 +28,16 @@
     "@eslint/js": "^9.15.0",
     "eslint": "^9.15.0",
     "globals": "^15.12.0",
-    "husky": "^9.1.6"
+    "husky": "^9.1.6",
+    "release-it": "^17.10.0"
+  },
+  "release-it": {
+    "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+    "github": {
+      "release": true
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}"
+    }
   }
 }
