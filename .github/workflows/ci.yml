@@ -74,6 +74,23 @@ jobs:
       - name: Run tests
         run: npm test
 
+  e2e-test:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}  # Exécute uniquement dans les Pull Requests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+
+      - name: Run E2E test
+        run: echo "Hello E2E !"  # Commande simple pour l'instant
+
   release:
     name: Release
     runs-on: ubuntu-latest
