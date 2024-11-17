@@ -15,7 +15,7 @@ jobs:
   validate:
     name: Validate
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}  # Ne s'exécute pas pour les tags
+    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: validate
-    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}  # Ne s'exécute pas pour les tags
+    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -54,10 +54,10 @@ jobs:
         run: npm run build
 
   test:
-    name: Test
+    name: Unit Test
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}  # Ne s'exécute pas pour les tags
+    if: ${{ github.event_name != 'push' || github.ref != 'refs/tags/*' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -71,13 +71,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
+
+  integration-test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    needs: test  # Ne s'exécute que si le job 'test' réussit
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+
+      - name: Run Integration Test
+        run: echo "Hello Integration !"  # Commande d'intégration
 
   e2e-test:
     name: E2E Test
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}  # Exécute uniquement dans les Pull Requests
+    needs: integration-test  # Ne s'exécute que si 'integration-test' réussit
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -94,12 +112,12 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: test
+    needs: e2e-test
     if: |
       github.event_name == 'workflow_dispatch' || (
         github.ref == 'refs/heads/main' && 
         github.event.pull_request == null && 
-        !contains(github.event.head_commit.message, 'chore: release')
+        !(github.event.head_commit.message && startsWith(github.event.head_commit.message, 'chore: release'))
       )
     steps:
       - name: Checkout code
@@ -121,7 +139,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: release
-    if: github.event_name == 'workflow_dispatch'  # Le déploiement ne peut être fait qu'en manuel
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
