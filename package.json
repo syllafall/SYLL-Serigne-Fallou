@@ -8,7 +8,8 @@
     "start": "node src/index.js",
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run",
-    "build": "babel src --out-dir dist"
+    "build": "babel src --out-dir dist",
+    "prepare": "husky install"
   },
   "dependencies": {
     "express": "^4.21.1",
