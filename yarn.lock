@@ -2378,13 +2378,6 @@ resolve@^1.14.2:
     path-parse "^1.0.7"
     supports-preserve-symlinks-flag "^1.0.0"
 
-rollup@^2.79.2:
-  version "2.79.2"
-  resolved "https://registry.npmjs.org/rollup/-/rollup-2.79.2.tgz"
-  integrity sha512-fS6iqSPZDs3dr/y7Od6y5nha8dW1YnbgtsyotCVvoFGKbERG++CVRFv1meyGDE1SNItQA8BrnCw7ScdAhRJ3XQ==
-  optionalDependencies:
-    fsevents "~2.3.2"
-
 rollup@^3.27.1:
   version "3.29.5"
   resolved "https://registry.npmjs.org/rollup/-/rollup-3.29.5.tgz"
@@ -2392,7 +2385,7 @@ rollup@^3.27.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
-rollup@^4.20.0:
+rollup@^4.20.0, rollup@^4.27.2:
   version "4.27.2"
   resolved "https://registry.npmjs.org/rollup/-/rollup-4.27.2.tgz"
   integrity sha512-KreA+PzWmk2yaFmZVwe6GB2uBD86nXl86OsDkt1bJS9p3vqWuEQ6HnJJ+j/mZi/q0920P99/MVRlB4L3crpF5w==
